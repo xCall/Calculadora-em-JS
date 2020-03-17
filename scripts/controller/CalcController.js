@@ -12,12 +12,27 @@ class CalcController {
 
   initialize() {
 
-    setInterval(() => {
+    this.setDisplayDateTime()
 
-      this.displayDate = this.currentDate//.toLocaleDateString(this._locale)
-      this.displayTime = this.currentDate//.toLocaleTimeString(this._locale)
+    setInterval(() =>{
+
+      this.setDisplayDateTime()
 
     }, 1000)
+
+  }
+
+  setDisplayDateTime() {
+
+    this.displayDate = this.currentDate.toLocaleDateString(this._locale, {
+
+      day: '2-digit',
+      month: 'short',
+      year: '2-digit'
+
+    })
+    this.displayTime = this.currentDate.toLocaleTimeString(this._locale)
+
 
   }
 
@@ -57,13 +72,13 @@ class CalcController {
 
   }
 
-  get dataAtual() {
+  get currentDate() {
 
     return new Date()
 
   }
 
-  set dataAtual(value) {
+  set currentDate(value) {
 
     this._currentDate = value
 
