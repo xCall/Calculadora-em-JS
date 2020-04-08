@@ -1,5 +1,7 @@
 class CalcController {
   constructor() {
+    this._audioOnOff = false
+    this._audio = new Audio('click.mp3')
     this._lastOperator = ''
     this._lastNumber = ''
     this._currentDate
@@ -19,9 +21,24 @@ class CalcController {
     }, 1000)
     this.setLastNumberToDisplay()
     this.pasteFromClipboard()
+    document.querySelectorAll('.btn-ac').forEach(btn => {
+      btn.addEventListener('dblclick', e => {
+        this.toggleAudio()
+      })
+    })
+  }
+  toggleAudio() {
+    this._audioOnOff = (this._audioOnOff) ? false : true
+  }
+  playAudio() {
+    if (this._audioOnOff) {
+      this._audio.currentTime = 0
+      this._audio.play()
+    }
   }
   initKeyboard() {
     document.addEventListener('keyup', e => {
+      this.playAudio()
       switch (e.key) {
         case 'Escape':
           this.clearAll()
@@ -123,7 +140,13 @@ class CalcController {
     }
   }
   getResult() {
-    return eval(this._operation.join(""))
+    try {
+      return eval(this._operation.join(""))
+    } catch (e) {
+      setTimeout(() => {
+        this.setError()
+      }, 1)
+    }
   }
   calc() {
     let last = ''
@@ -186,6 +209,7 @@ class CalcController {
     //this._operation.push(value)
   }
   execBtn(value) {
+    this.playAudio()
     switch (value) {
       case 'ac':
         this.clearAll()
@@ -267,6 +291,10 @@ class CalcController {
     return this._displayCalcEl.innerHTML
   }
   set displayCalc(value) {
+    if (value.toString().length > 10) {
+      this.setError()
+      return false
+    }
     this._displayCalcEl.innerHTML = value
   }
   get currentDate() {
